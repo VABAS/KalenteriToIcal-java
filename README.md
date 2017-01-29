@@ -2,7 +2,7 @@
 
 Tämä työkalu hakee JAMK:n kalenterin asiosta ja muuttaa sen ical muotoon, jolloin sen voi tuoda useimpiin kalenteriohjelmiin.
 
-Toimiakseen ohjelma vaatii javalle Jsoup kirjaston joka on saatavilla ![täältä](https://jsoup.org/). Kirjoittamisen aikaan uusin versio Jsoup kirjastosta on 1.10.2 ja tällä versiolla ohjelma on testattu.
+Toimiakseen ohjelma vaatii javalle Jsoup kirjaston joka on saatavilla [täältä](https://jsoup.org/). Kirjoittamisen aikaan uusin versio Jsoup kirjastosta on 1.10.2 ja tällä versiolla ohjelma on testattu.
 
 ## Käyttö
 `java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics [eimon] [eikys]` 
