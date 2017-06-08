@@ -15,10 +15,16 @@ Luodaksesi _.class_-tiedostot hakemistoon build _jsoup.jar_ sijaitessa hakemisto
 
 ## Käyttö
 
-`java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics [eimon] [eikys]`
+`java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics [eimon] [eikys] --privacy [PUBLIC|CONFIDENTIAL|PRIVATE] --fromfile`
 
 Edellisessä url on oltava asion lukujärjestyksen osoite kokonaan ja sisältää
 päiväys. Osoitteessa on löydyttävä lukujärjestys, joka sisältää tapahtumia.
+
+Parametrina voidaan myös antaa tapahtumien yksityisyys asetus (ical
+CLASS-kentän arvo) antamalla parametri --privacy.
+
+Jos annetaan parametri --fromfile ohjelma käsittelee url-parametria paikallisena
+tiedostona ja noutaa kurssikohtaiset osoitteet sieltä.
 
 Tiedosto.ics on tallennettavan tiedoston nimi suhteessa suoritus hakemistoon.
 Sinulla on oltava oikeudet luoda tiedosto tai muokata sitä. **Jos tiedosto on
