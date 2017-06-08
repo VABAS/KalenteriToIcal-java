@@ -7,6 +7,7 @@ class Vevent {
     private String summary;
     private String location;
     private String description;
+    private String veventClass;
 
     // Properties.
     public String getUid () {
@@ -14,7 +15,8 @@ class Vevent {
     }
     // Detailed constructor. All items assigned.
     public Vevent (String uid, String dtStamp, String dtStart,  String dtEnd,
-                   String summary, String location, String description) {
+                   String summary, String location, String veventClass,
+                   String description) {
         this.uid = uid;
         this.dtStamp = dtStamp;
         this.dtStart = dtStart;
@@ -22,16 +24,17 @@ class Vevent {
         this.summary = summary;
         this.location = location;
         this.description = description;
+        this.veventClass = veventClass;
     }
     // Constructor without description.
     public Vevent (String uid, String dtStamp, String dtStart,  String dtEnd,
-                   String summary, String location) {
-        this(uid, dtStamp, dtStart, dtEnd, summary, location, "");
+                   String summary, String location, String veventClass) {
+        this(uid, dtStamp, dtStart, dtEnd, summary, location, veventClass, "");
     }
     // Constructor without location and description.
     public Vevent (String uid, String dtStamp, String dtStart,  String dtEnd,
-                   String summary) {
-        this(uid, dtStamp, dtStart, dtEnd, summary, "");
+                   String summary, String veventClass) {
+        this(uid, dtStamp, dtStart, dtEnd, summary, veventClass, "");
     }
 
     // Method getString() returns vevent as string.
@@ -44,6 +47,8 @@ class Vevent {
                "SUMMARY:" + summary + "\r\n" +
                "LOCATION:" + location + "\r\n" +
                "DESCRIPTION:" + description + "\r\n" +
+               "STATUS:CONFIRMED\r\n" +
+               "CLASS:" + veventClass + "\r\n" +
                "END:VEVENT\r\n";
     }
 }

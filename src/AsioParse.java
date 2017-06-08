@@ -75,7 +75,7 @@ class AsioParse {
     }
     
     // Fetches course timetable and returns it as array of vevents.
-    public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate) {
+    public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate, String veventPrivacy) {
         ArrayList<ArrayList<String>> properties = new ArrayList<>();
         String html = doHttpRequest(address);
         Document doc = Jsoup.parse(html);
@@ -132,6 +132,7 @@ class AsioParse {
                                        date[2] + date[1] + date[0] + "T" + endTime + "00",
                                        courseName,
                                        room,
+                                       veventPrivacy,
                                        teacher));
             }
             else {
