@@ -78,7 +78,7 @@ class KalenteriToIcal {
         
         // Deciding whether to fetch links from asio or from local file.
         if (fromFile) {
-            System.out.println("Haetaan linkit tiedostosta '" + file + "'");
+            System.out.println("Haetaan linkit tiedostosta '" + address + "'");
             BufferedReader inFile = null;
             try {
                 inFile = new BufferedReader(new FileReader(address));

@@ -78,7 +78,7 @@ class AsioParse {
     public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate, String veventPrivacy) {
         ArrayList<ArrayList<String>> properties = new ArrayList<>();
         String html = doHttpRequest(address);
-        Document doc = Jsoup.parse(html);
+        Document doc = Jsoup.parse(html.replace("\n","\\n"));
         Elements k = doc.select("tr[bgcolor=#e7e7e7]");
         System.out.println("Löydettiin " + k.size() + " esiintymää.");
         for (Element kk : k) {
