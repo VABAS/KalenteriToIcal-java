@@ -47,7 +47,9 @@ class AsioParse {
             
             if (!dontAsk) {
                 while (true) {
-                    System.out.print("Haluatko tuoda kurssin \"" + kk.text() + "\"? [K/e]: ");
+                    System.out.print("Haluatko tuoda kurssin \""
+                                     + kk.text()
+                                     + "\"? [K/e]: ");
                     String confirmation = scanner.next().toLowerCase();
                     if (confirmation.equals("k")) {
                         importCourse = true;
@@ -119,7 +121,9 @@ class AsioParse {
             }
             
             // Constructing veventid.
-            String veventId = courseName.replace(" ", "_") + "@" + date[2] + date[1] + date[0] + "T" + startTime + additional;
+            String veventId = courseName.replace(" ", "_") + "@" + date[2]
+                              + date[1] + date[0] + "T" + startTime
+                              + additional;
             
             // Not doing add if identical id already exists.
             if (!veventIds.contains(veventId)) {
@@ -136,8 +140,8 @@ class AsioParse {
                                        teacher));
             }
             else {
-                System.out.println("Tapahtumaa " + courseName +
-                                   " ei tuotu. Syy: duplicaatti ID.");
+                System.out.println("Tapahtumaa " + courseName
+                                   + " ei tuotu. Syy: duplicaatti ID.");
             }
         }
         

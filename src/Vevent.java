@@ -39,16 +39,16 @@ class Vevent {
 
     // Method getString() returns vevent as string.
     public String toString () {
-        return "BEGIN:VEVENT\r\n" +
-               "UID:" + uid + "\r\n" +
-               "DTSTAMP:" + dtStamp + "\r\n" +
-               "DTSTART:" + dtStart + "\r\n" +
-               "DTEND:" + dtEnd + "\r\n" +
-               "SUMMARY:" + summary + "\r\n" +
-               "LOCATION:" + location + "\r\n" +
-               "DESCRIPTION:" + description + "\r\n" +
-               "STATUS:CONFIRMED\r\n" +
-               "CLASS:" + veventClass + "\r\n" +
-               "END:VEVENT\r\n";
+        return "BEGIN:VEVENT\r\n"
+               + "UID:" + uid + "\r\n"
+               + "DTSTAMP:" + dtStamp + "\r\n"
+               + "DTSTART:" + dtStart + "\r\n"
+               + "DTEND:" + dtEnd + "\r\n"
+               + "SUMMARY:" + summary + "\r\n"
+               + "LOCATION:" + location + "\r\n"
+               + "DESCRIPTION:" + description + "\r\n"
+               + "STATUS:CONFIRMED\r\n"
+               + "CLASS:" + veventClass + "\r\n"
+               + "END:VEVENT\r\n";
     }
 }

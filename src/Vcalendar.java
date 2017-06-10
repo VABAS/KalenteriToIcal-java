@@ -47,9 +47,9 @@ class Vcalendar {
                 events += event.toString();
             }
         }
-        return "BEGIN:VCALENDAR\r\n" +
-               "VERSION:" + version + "\r\n" +
-               "PRODID:" + prodId + "\r\n" +
-               events + "END:VCALENDAR\r\n";
+        return "BEGIN:VCALENDAR\r\n"
+               + "VERSION:" + version + "\r\n"
+               + "PRODID:" + prodId + "\r\n"
+               + events + "END:VCALENDAR\r\n";
     }
 }
