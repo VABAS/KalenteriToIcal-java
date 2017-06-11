@@ -6,23 +6,29 @@ import java.io.FileReader;
 
 class KalenteriToIcal {
     // Usage string.
-    static String usage = "KalenteriToIcal osoite tiedosto.ics [eimon] [eikys]"
-                          + "\nPakolliset parametrit ovat syöttö-"
-                          + "osoite/tiedosto sekä tulostustiedosto jotka ovat "
-                          + "aina ensimmäinen ja toinen parametri."
-                          + "\n\nLisäasetukset:"
+    static String usage = "KalenteriToIcal address|file.txt file.ics"
+                          + "\nInput address/file and output file must always "
+                          + "be present and in same order (input first)."
+                          + "\n\nAdditional parameters:"
+                          + "\n--nodup"
+                          + "\n  Do not import events with exactly same name "
+                          + "and start time (basically the same event)."
+                          + "\n--noask"
+                          + "\n  Import all courses found without asking."
                           + "\n--privacy [PUBLIC|CONFIDENTIAL|PRIVATE]"
-                          + "\n  Määrittää kaikkien tapahtumien "
-                          + "yksityisyysarvon (ical CLASS-kenttä)."
+                          + "\n  Specify the value of vevent CLASS-field. If "
+                          + "not specified defaults to CONFIDENTIAL."
                           + "\n--fromfile"
-                          + "\n  Määrittää, että kurssiosoitteet haetaan "
-                          + "tiedostosta. Tiedoston sijainti kirjoitetaan "
-                          + "osoitteen paikalle.";
-
+                          + "\n  Get course urls from newline separated text "
+                          + "file instead. File location is provided in place "
+                          + "of the address. All courses specified in this "
+                          + "file are imported without asking for "
+                          + "confirmation.";
+    
     public static void main (String args[]) {
         if (args.length < 2) {
-            System.out.println("Ei tarpeeksi argumentteja!");
-            System.out.println("Käyttö: " + usage);
+            System.out.println("Not enough arguments!");
+            System.out.println("Usage: " + usage);
             System.exit(0);
         }
 
@@ -35,18 +41,20 @@ class KalenteriToIcal {
         // Fromfile status.
         boolean fromFile = false;
 
-        // Initializing eimon and eikys statuses to false here.
-        boolean eimon = false;
-        boolean eikys = false;
+        // Initializing nodup and noask statuses to false here.
+        boolean nodup = false;
+        boolean noask = false;
 
-        // Checking for eimon and eikys statuses from args.
-        for (int i = 0; i < args.length; i++) {
+        // Checking for nodup and noask statuses from args.
+        for (int i = 2; i < args.length; i++) {
             switch (args[i]) {
                 case "eimon":
-                    eimon = true;
+                case "--nodup":
+                    nodup = true;
                     break;
                 case "eikys":
-                    eikys = true;
+                case "--noask":
+                    noask = true;
                     break;
                 case "--fromfile":
                     fromFile = true;
@@ -57,7 +65,7 @@ class KalenteriToIcal {
                         privacy = args[i + 1].toUpperCase();
                     }
                     catch (IndexOutOfBoundsException e) {
-                        System.out.println("Yksityisyysasetusta ei ole annettu.");
+                        System.out.println("Privacy field value was not specified.");
                         System.exit(0);
                     }
                     if (privacy.equals("PUBLIC") ||
@@ -66,9 +74,14 @@ class KalenteriToIcal {
                         veventPrivacy = privacy;
                         }
                     else {
-                        System.out.println("Yksityisyysasetus ei kelpaa.");
+                        System.out.println("Privacy field value was invalid."
+                                           + "Valid values are PUBLIC, "
+                                           + "CONFIDENTIAL and PRIVATE");
                         System.exit(0);
                     }
+                    break;
+                default:
+                    System.out.println("Unknown argument " + args[i] + ". Ignoring.");
                     break;
             }
         }
@@ -78,7 +91,7 @@ class KalenteriToIcal {
         
         // Deciding whether to fetch links from asio or from local file.
         if (fromFile) {
-            System.out.println("Haetaan linkit tiedostosta '" + address + "'");
+            System.out.println("Fetching links from file '" + address + "'");
             BufferedReader inFile = null;
             try {
                 inFile = new BufferedReader(new FileReader(address));
@@ -105,17 +118,17 @@ class KalenteriToIcal {
             }
         }
         else {
-            System.out.println("Haetaan linkit asiosta.");
+            System.out.println("Fetching links from asio.");
             // Finding out the individual course timetable links.
-            links = new ArrayList<>(Arrays.asList(AsioParse.extractLinks(address, eikys)));
+            links = new ArrayList<>(Arrays.asList(AsioParse.extractLinks(address, noask)));
         }
-        // Contructing vcalendar object. Now vevents here, adding them later.
+        // Contructing vcalendar object. No vevents here, adding them later.
         Vcalendar vcalendar = new Vcalendar("2.0", "sikkela");
         
         // Fetching course timetables and adding fetched vevents to vcalendar
         // object.
         for (String link : links) {
-            Vevent[] vevents = AsioParse.fetchCourseTimetable(link, eimon, veventPrivacy);
+            Vevent[] vevents = AsioParse.fetchCourseTimetable(link, nodup, veventPrivacy);
             for (Vevent vevent : vevents) {
                 vcalendar.addEvent(vevent);
             }

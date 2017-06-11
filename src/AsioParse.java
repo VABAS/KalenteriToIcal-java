@@ -47,20 +47,19 @@ class AsioParse {
             
             if (!dontAsk) {
                 while (true) {
-                    System.out.print("Haluatko tuoda kurssin \""
-                                     + kk.text()
-                                     + "\"? [K/e]: ");
+                    System.out.print("Do you want to import course \""
+                                     + kk.text() + "\"? [Y/n]: ");
                     String confirmation = scanner.next().toLowerCase();
-                    if (confirmation.equals("k")) {
+                    if (confirmation.equals("y") || confirmation.equals("k")) {
                         importCourse = true;
                         break;
                     }
-                    else if (confirmation.equals("e")) {
+                    else if (confirmation.equals("n") || confirmation.equals("e")) {
                         importCourse = false;
                         break;
                     }
                     else {
-                        System.out.println("Vastaa K/e!");
+                        System.out.println("Answer Y/n!");
                     }
                 }
             }
@@ -82,11 +81,11 @@ class AsioParse {
         String html = doHttpRequest(address);
         Document doc = Jsoup.parse(html.replace("\n","\\n"));
         Elements k = doc.select("tr[bgcolor=#e7e7e7]");
-        System.out.println("Löydettiin " + k.size() + " esiintymää.");
+        System.out.println("Found " + k.size() + " occurences.");
         for (Element kk : k) {
             ArrayList<String> temp = new ArrayList<String>();
             for (Element kkk : kk.select("td")) {
-                temp.add(kkk.text());
+                temp.add(kkk.text().replace("\\n ","\\n"));
             }
             
             // Removing last item which is always empty.
@@ -140,8 +139,8 @@ class AsioParse {
                                        teacher));
             }
             else {
-                System.out.println("Tapahtumaa " + courseName
-                                   + " ei tuotu. Syy: duplicaatti ID.");
+                System.out.println("Event '" + courseName + "' was not "
+                                   + "imported. Reason: duplicate ID.");
             }
         }
         

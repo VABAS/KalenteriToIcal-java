@@ -15,16 +15,18 @@ Luodaksesi _.class_-tiedostot hakemistoon build _jsoup.jar_ sijaitessa hakemisto
 
 ## Käyttö
 
-`java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics [eimon] [eikys] --privacy [PUBLIC|CONFIDENTIAL|PRIVATE] --fromfile`
+`java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics`
 
 Edellisessä url on oltava asion lukujärjestyksen osoite kokonaan ja sisältää
 päiväys. Osoitteessa on löydyttävä lukujärjestys, joka sisältää tapahtumia.
 
 Parametrina voidaan myös antaa tapahtumien yksityisyys asetus (ical
-CLASS-kentän arvo) antamalla parametri --privacy.
+CLASS-kentän arvo) antamalla parametri _--privacy_. Arvo voi olla PUBLIC,
+CONFIDENTIAL tai PRIVATE. Oletuksena arvo on CONFIDENTIAL kun parametria ei ole
+määritetty.
 
-Jos annetaan parametri --fromfile ohjelma käsittelee url-parametria paikallisena
-tiedostona ja noutaa kurssikohtaiset osoitteet sieltä.
+Jos annetaan parametri _--fromfile_ ohjelma käsittelee url-parametria
+paikallisena tiedostona ja noutaa kurssikohtaiset osoitteet sieltä.
 
 Tiedosto.ics on tallennettavan tiedoston nimi suhteessa suoritus hakemistoon.
 Sinulla on oltava oikeudet luoda tiedosto tai muokata sitä. **Jos tiedosto on
@@ -32,10 +34,10 @@ olemassa skripti ylikirjoittaa sen!**
 
 Joillakin kursseilla on useita esiintymiä samalla ajan hetkellä. Jos et halua
 kaikkia näitä esiintymiä tallennettavan tiedostoosi, lisää komennon perään vielä
-argumentti _eimon_. Tällöin ohjelma ilmoittaa kun se jättää esiintymiä huomiotta
+argumentti _--nodup_. Tällöin ohjelma ilmoittaa kun se jättää esiintymiä huomiotta
 niiden saman tapahtuma-ajan takia.
 
 Skripti kysyy jokaisen löydetyn kurssin kohdalla haluatko tuoda sen. Kun vastaat
-_k_, hakee se kyseisen kurssin tiedot muistiinsa. Voit ohittaa kurssin
-vastaamalla kysymykseen _e_. Voit myös ohittaa kysymykset antamalla skriptille
-argumentin _eikys_.
+_y_, hakee se kyseisen kurssin tiedot muistiinsa. Voit ohittaa kurssin
+vastaamalla kysymykseen _n_. Voit myös ohittaa kysymykset antamalla skriptille
+argumentin _--noask_.
