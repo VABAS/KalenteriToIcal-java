@@ -7,6 +7,17 @@ Toimiakseen ohjelma vaatii javalle Jsoup kirjaston joka on saatavilla [täältä
 
 ## Kääntäminen
 
+### Apache Ant
+
+Kääntämiseen on mahdollista käyttää
+[Apache Ant™](http://ant.apache.org/)-työkalua. Kääntäminen onnistuu tällöin
+ajamalla ensin komento `ant compile` ja sen jälkeen komento `ant jar`, jolloin
+ajettava .jar-tiedosto luodaan hakemistoon `./build/jar`. Tämän jälkeen ohjelmaa
+voidaan ajaa komennolla `java -jar build/jar/KalenteriToIcal.jar`.
+
+
+### javac
+
 Kääntäjälle on annettava _classpath_ argumetilla hakemisto, jossa _jsoup.jar_ sijaitsee.
 Luodaksesi _.class_-tiedostot hakemistoon build _jsoup.jar_ sijaitessa hakemistossa lib aja komento
 
@@ -16,6 +27,10 @@ Luodaksesi _.class_-tiedostot hakemistoon build _jsoup.jar_ sijaitessa hakemisto
 ## Käyttö
 
 `java -cp jspoup.jar:. KalenteriToIcal url tiedosto.ics`
+
+tai
+
+`java -jar KalenteriToIcal.jar url tiedosto.ics`
 
 Edellisessä url on oltava asion lukujärjestyksen osoite kokonaan ja sisältää
 päiväys. Osoitteessa on löydyttävä lukujärjestys, joka sisältää tapahtumia.
