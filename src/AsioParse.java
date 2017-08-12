@@ -20,7 +20,7 @@ class AsioParse {
             System.out.println("Connecting to server...");
             connection.setRequestMethod("GET");
             System.out.println("Reading response...");
-            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), "ISO-8859-1"));
             String line;
             while ((line = rd.readLine()) != null) {
                 result += line + "\n";
