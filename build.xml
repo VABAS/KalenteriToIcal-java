@@ -5,6 +5,7 @@
     <property name="class.dir" value="${build.dir}/classes"/>
     <property name="jar.dir" value="${build.dir}/jar"/>
     <property name="main-class" value="KalenteriToIcal"/>
+    <property name="gmain-class" value="GKalenteriToIcal"/>
 
     <path id="classpath">
         <fileset dir="${classpath.dir}" includes="*.jar"/>
@@ -13,16 +14,34 @@
     <target name="clean">
         <delete dir="${build.dir}"/>
     </target>
-    <target name="compile">
+    <target name="initclassrdir">
         <mkdir dir="${class.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${class.dir}" classpathref="classpath"/>
+        <delete>
+            <fileset dir="${class.dir}" includes="*" />
+        </delete>
     </target>
-    <target name="jar">
+    <target name="compile" depends="initclassrdir">
+        <javac srcdir="${src.dir}" excludes="GKalenteriToIcal.java" destdir="${class.dir}" classpathref="classpath"/>
+    </target>
+    <target name="gcompile" depends="initclassrdir">
+        <javac srcdir="${src.dir}" excludes="KalenteriToIcal.java" destdir="${class.dir}" classpathref="classpath"/>
+    </target>
+    <target name="initjardir">
         <mkdir dir="${jar.dir}"/>
+    </target>
+    <target name="jar" depends="compile,initjardir">
         <jar destfile="${jar.dir}/KalenteriToIcal.jar" basedir="${class.dir}">
             <zipgroupfileset dir="${classpath.dir}" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="gjar" depends="gcompile,initjardir">
+        <jar destfile="${jar.dir}/GKalenteriToIcal.jar" basedir="${class.dir}">
+            <zipgroupfileset dir="${classpath.dir}" includes="*.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="${gmain-class}"/>
             </manifest>
         </jar>
     </target>

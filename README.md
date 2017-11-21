@@ -11,9 +11,9 @@ Toimiakseen ohjelma vaatii javalle Jsoup kirjaston joka on saatavilla [täältä
 
 Kääntämiseen on mahdollista käyttää
 [Apache Ant™](http://ant.apache.org/)-työkalua. Kääntäminen onnistuu tällöin
-ajamalla ensin komento `ant compile` ja sen jälkeen komento `ant jar`, jolloin
-ajettava .jar-tiedosto luodaan hakemistoon `./build/jar`. Tämän jälkeen ohjelmaa
-voidaan ajaa komennolla `java -jar build/jar/KalenteriToIcal.jar`.
+ajamalla komento `ant jar`, jolloin ajettava .jar-tiedosto luodaan hakemistoon
+`./build/jar`. Tämän jälkeen ohjelmaa voidaan ajaa komennolla
+`java -jar build/jar/KalenteriToIcal.jar`.
 
 
 ### javac
