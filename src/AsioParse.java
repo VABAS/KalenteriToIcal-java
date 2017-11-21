@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Scanner;
 
 class AsioParse {
     private static String doHttpRequest (String address) {
@@ -34,47 +33,23 @@ class AsioParse {
     }
 
     // Fetches links from page provided and returns them as array.
-    public static String[] extractLinks (String address, boolean dontAsk) {
-        ArrayList<String> links = new ArrayList<String>();
+    public static ArrayList<String[]> extractLinks (String address) {
+        ArrayList<String[]> links = new ArrayList<String[]>();
         String html = doHttpRequest(address);
         Document doc = Jsoup.parse(html);
         Elements k = doc.select("a[href=javascript:void(null);]");
         // Splitting and extracting the link part only.
         for (Element kk : k) {
-            // Asking for confirmation before saving link.
-            Scanner scanner = new Scanner(System.in);
-            boolean importCourse;
-            
-            if (!dontAsk) {
-                while (true) {
-                    System.out.print("Do you want to import course \""
-                                     + kk.text() + "\"? [Y/n]: ");
-                    String confirmation = scanner.next().toLowerCase();
-                    if (confirmation.equals("y") || confirmation.equals("k")) {
-                        importCourse = true;
-                        break;
-                    }
-                    else if (confirmation.equals("n") || confirmation.equals("e")) {
-                        importCourse = false;
-                        break;
-                    }
-                    else {
-                        System.out.println("Answer Y/n!");
-                    }
-                }
+          links.add(
+            new String[]{
+              kk.text(),
+              "https://amp.jamk.fi/asio_v16/" + kk.attr("onclick").split("'")[1].replace("../", "")
             }
-            else {
-                importCourse = true;
-            }
-            
-            // Adding link to import-list if wanted so.
-            if (importCourse) {
-                links.add("https://amp.jamk.fi/asio_v16/" + kk.attr("onclick").split("'")[1].replace("../", ""));
-            }
+          );
         }
-        return links.toArray(new String[links.size()]);
+        return links;
     }
-    
+
     // Fetches course timetable and returns it as array of vevents.
     public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate, String veventPrivacy) {
         ArrayList<ArrayList<String>> properties = new ArrayList<>();
@@ -87,14 +62,14 @@ class AsioParse {
             for (Element kkk : kk.select("td")) {
                 temp.add(kkk.text().replace("\\n ","\\n"));
             }
-            
+
             // Removing last item which is always empty.
             temp.remove(temp.size() - 1);
             properties.add(temp);
         }
         ArrayList<Vevent> vevents = new ArrayList<>();
         ArrayList<String> veventIds = new ArrayList<>();
-        
+
         for (ArrayList<String> property : properties) {
             String[] date = property.toArray()[0].toString().split("\\xa0")[1].split("\\.");
             String startTime = (String)property.toArray()[1].toString().split(" - ")[0].replace(":", "");
@@ -103,14 +78,14 @@ class AsioParse {
             String targetGroup = (String)property.toArray()[3];
             String teacher = (String)property.toArray()[4];
             String courseName = (String)property.toArray()[5];
-            
+
             // Get and format current datetime to ical format. (YYYYMMDDTHHMMSS)
             Date dateNow = new Date();
             SimpleDateFormat ymd = new SimpleDateFormat("yyyyMMdd");
             SimpleDateFormat hms = new SimpleDateFormat("HHmmss");
             String dateNowymd = ymd.format(dateNow);
             String dateNowhms = hms.format(dateNow);
-            
+
             // Processing additional.
             String additional = "";
             if (!dontDuplicate) {
@@ -118,12 +93,12 @@ class AsioParse {
                 // get rid of zero.
                 additional = "-" + Integer.toString(vevents.size() + 1);
             }
-            
+
             // Constructing veventid.
             String veventId = courseName.replace(" ", "_") + "@" + date[2]
                               + date[1] + date[0] + "T" + startTime
                               + additional;
-            
+
             // Not doing add if identical id already exists.
             if (!veventIds.contains(veventId)) {
                 // Adding veventId to id-array for identification later.
@@ -143,7 +118,7 @@ class AsioParse {
                                    + "imported. Reason: duplicate ID.");
             }
         }
-        
+
         return vevents.toArray(new Vevent[vevents.size()]);
     }
 }

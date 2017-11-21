@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Scanner;
 
 class KalenteriToIcal {
     // Usage string.
@@ -24,7 +25,7 @@ class KalenteriToIcal {
                           + "of the address. All courses specified in this "
                           + "file are imported without asking for "
                           + "confirmation.";
-    
+
     public static void main (String args[]) {
         if (args.length < 2) {
             System.out.println("Not enough arguments!");
@@ -37,7 +38,7 @@ class KalenteriToIcal {
         String file = args[1];
         // Privacy string. Defaults to confidential.
         String veventPrivacy = "CONFIDENTIAL";
-        
+
         // Fromfile status.
         boolean fromFile = false;
 
@@ -85,10 +86,10 @@ class KalenteriToIcal {
                     break;
             }
         }
-        
+
         //String[] links;
-        ArrayList<String> links = new ArrayList<String>();
-        
+        ArrayList<String[]> links = new ArrayList<String[]>();
+
         // Deciding whether to fetch links from asio or from local file.
         if (fromFile) {
             System.out.println("Fetching links from file '" + address + "'");
@@ -100,7 +101,7 @@ class KalenteriToIcal {
                     if (line.length() <= 0) {
                         continue;
                     }
-                    links.add(line);
+                    links.add(new String[]{"", line});
                 }
             }
             catch (java.io.IOException e) {
@@ -120,20 +121,46 @@ class KalenteriToIcal {
         else {
             System.out.println("Fetching links from asio.");
             // Finding out the individual course timetable links.
-            links = new ArrayList<>(Arrays.asList(AsioParse.extractLinks(address, noask)));
+            links = AsioParse.extractLinks(address);
         }
         // Contructing vcalendar object. No vevents here, adding them later.
         Vcalendar vcalendar = new Vcalendar("2.0", "sikkela");
-        
+
         // Fetching course timetables and adding fetched vevents to vcalendar
         // object.
-        for (String link : links) {
-            Vevent[] vevents = AsioParse.fetchCourseTimetable(link, nodup, veventPrivacy);
-            for (Vevent vevent : vevents) {
-                vcalendar.addEvent(vevent);
+        for (String[] link : links) {
+          // Asking for confirmation before importing if noask is not set and if
+          // not getting links from file.
+          if (!noask && !fromFile) {
+            boolean importCourse;
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                System.out.print("Do you want to import course \""
+                                 + link[0] + "\"? [Y/n]: ");
+                String confirmation = scanner.next().toLowerCase();
+                if (confirmation.equals("y") || confirmation.equals("k")) {
+                  importCourse = true;
+                  break;
+                }
+                else if (confirmation.equals("n") || confirmation.equals("e")) {
+                  importCourse = false;
+                  break;
+                }
+                else {
+                    System.out.println("Answer Y/n!");
+                }
             }
+            if (!importCourse) {
+              continue;
+            }
+          }
+
+          Vevent[] vevents = AsioParse.fetchCourseTimetable(link[1], nodup, veventPrivacy);
+          for (Vevent vevent : vevents) {
+              vcalendar.addEvent(vevent);
+          }
         }
-        
+
         // Write result to file.
         try {
             PrintWriter out = new PrintWriter(file);
@@ -144,6 +171,4 @@ class KalenteriToIcal {
             e.printStackTrace();
         }
     }
-    
-    
 }
