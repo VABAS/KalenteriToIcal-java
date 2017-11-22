@@ -71,7 +71,7 @@ class AsioParse {
         ArrayList<String> veventIds = new ArrayList<>();
 
         for (ArrayList<String> property : properties) {
-            String[] date = property.toArray()[0].toString().split("\\xa0")[1].split("\\.");
+            String[] date = property.toArray()[0].toString().split(" ")[1].split("\\.");
             String startTime = (String)property.toArray()[1].toString().split(" - ")[0].replace(":", "");
             String endTime = (String)property.toArray()[1].toString().split(" - ")[1].replace(":", "");
             String room = (String)property.toArray()[2];
