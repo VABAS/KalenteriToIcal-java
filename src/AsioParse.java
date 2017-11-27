@@ -11,14 +11,17 @@ import java.text.SimpleDateFormat;
 
 class AsioParse {
     private static String doHttpRequest (String address) {
+        return doHttpRequest(address, true);
+    }
+    private static String doHttpRequest (String address, boolean printInfos) {
         String result = "";
         try {
             HttpURLConnection connection = null;
             URL url = new URL(address);
             connection = (HttpURLConnection) url.openConnection();
-            System.out.println("Connecting to server...");
+            if (printInfos) System.out.println("Connecting to server...");
             connection.setRequestMethod("GET");
-            System.out.println("Reading response...");
+            if (printInfos) System.out.println("Reading response...");
             BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), "ISO-8859-1"));
             String line;
             while ((line = rd.readLine()) != null) {
@@ -27,15 +30,18 @@ class AsioParse {
             rd.close();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            if (printInfos) e.printStackTrace();
         }
         return result;
     }
 
     // Fetches links from page provided and returns them as array.
     public static ArrayList<String[]> extractLinks (String address) {
+        return extractLinks(address, true);
+    }
+    public static ArrayList<String[]> extractLinks (String address, boolean printInfos) {
         ArrayList<String[]> links = new ArrayList<String[]>();
-        String html = doHttpRequest(address);
+        String html = doHttpRequest(address, printInfos);
         Document doc = Jsoup.parse(html);
         Elements k = doc.select("a[href=javascript:void(null);]");
         // Splitting and extracting the link part only.
@@ -52,11 +58,14 @@ class AsioParse {
 
     // Fetches course timetable and returns it as array of vevents.
     public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate, String veventPrivacy) {
+      return fetchCourseTimetable(address, dontDuplicate, veventPrivacy, true);
+    }
+    public static Vevent[] fetchCourseTimetable (String address, boolean dontDuplicate, String veventPrivacy, boolean printInfos) {
         ArrayList<ArrayList<String>> properties = new ArrayList<>();
-        String html = doHttpRequest(address);
+        String html = doHttpRequest(address, printInfos);
         Document doc = Jsoup.parse(html.replace("\n","\\n"));
         Elements k = doc.select("tr[bgcolor=#e7e7e7]");
-        System.out.println("Found " + k.size() + " occurences.");
+        if (printInfos) System.out.println("Found " + k.size() + " occurences.");
         for (Element kk : k) {
             ArrayList<String> temp = new ArrayList<String>();
             for (Element kkk : kk.select("td")) {
@@ -114,8 +123,10 @@ class AsioParse {
                                        teacher));
             }
             else {
-                System.out.println("Event '" + courseName + "' was not "
-                                   + "imported. Reason: duplicate ID.");
+                if (printInfos) {
+                  System.out.println("Event '" + courseName + "' was not "
+                                     + "imported. Reason: duplicate ID.");
+                }
             }
         }
 
