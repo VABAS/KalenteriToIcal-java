@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
+import java.io.Console;
 
 class KalenteriToIcal {
     // Usage string.
@@ -89,7 +90,13 @@ class KalenteriToIcal {
 
         //String[] links;
         ArrayList<String[]> links = new ArrayList<String[]>();
-
+        // Asking asio username and password.
+        String userid = new String(System.console().readLine("Asio username: "));
+        String password = new String(System.console().readPassword("Asio password: "));
+        if (!AsioParse.authentication(userid, password)) {
+          System.out.println("Authentication failed! Check your credentials.");
+          return;
+        }
         // Deciding whether to fetch links from asio or from local file.
         if (fromFile) {
             System.out.println("Fetching links from file '" + address + "'");

@@ -5,11 +5,59 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 class AsioParse {
+    private static final String ENCODING = "ISO-8859-1";
+    public static boolean authentication (String userid, String password) {
+      return authentication(userid, password, true);
+    }
+    public static boolean authentication (String userid, String password, boolean printInfos) {
+      try {
+        if (printInfos) {
+          System.out.println("Authenticating...");
+        }
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+        byte[] postData = ("asiolg[u]=" + userid + "&asiolg[p]=" + password).getBytes();
+        HttpURLConnection connection = null;
+        URL url = new URL("https://amp.jamk.fi/asio/kalenterit2/index.php");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setRequestProperty("charset", "utf-8");
+        connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
+        connection.setUseCaches(false);
+        connection.setDoOutput(true);
+        try(DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+           wr.write(postData);
+           wr.close();
+        }
+        if (connection.getResponseCode() != 200) {
+          throw new Exception ();
+        }
+        String html = "";
+        BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), ENCODING));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            html += line + "\n";
+        }
+        rd.close();
+        Document doc = Jsoup.parse(html.replace("\n","\\n"));
+        if (doc.title().equals("Asio® -- Login")) {
+          return false;
+        }
+      }
+      catch (Exception e) {
+        if (printInfos) e.printStackTrace();
+      }
+      return true;
+    }
     private static String doHttpRequest (String address) {
         return doHttpRequest(address, true);
     }
@@ -22,7 +70,7 @@ class AsioParse {
             if (printInfos) System.out.println("Connecting to server...");
             connection.setRequestMethod("GET");
             if (printInfos) System.out.println("Reading response...");
-            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), "ISO-8859-1"));
+            BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream(), ENCODING));
             String line;
             while ((line = rd.readLine()) != null) {
                 result += line + "\n";
@@ -46,10 +94,15 @@ class AsioParse {
         Elements k = doc.select("a[href=javascript:void(null);]");
         // Splitting and extracting the link part only.
         for (Element kk : k) {
+          // Checing that links is valid reservation timetable link (should
+          // start with "kokvar").
+          if (!kk.attr("onclick").split("'")[1].replace("../", "").split("/")[0].equals("kokvar")) {
+            continue;
+          }
           links.add(
             new String[]{
               kk.text(),
-              "https://amp.jamk.fi/asio_v16/" + kk.attr("onclick").split("'")[1].replace("../", "")
+              "https://amp.jamk.fi/asio/" + kk.attr("onclick").split("'")[1].replace("../", "")
             }
           );
         }
